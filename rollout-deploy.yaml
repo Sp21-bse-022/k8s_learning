@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rollout-demo
+  labels:
+    app: ro
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ro-phase
+  template:
+    metadata:
+      labels:
+        app: ro-phase
+    spec:
+      containers:
+      - name: php-redis
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 25%
+
+
+
+

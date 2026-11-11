@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-monitor-pod
+  labels:
+    app: resource-monitor
+  annotations:
+    kyverno.io/skip: "true"
+spec:
+  # HostPID lets the pod see all system processes running on the underlying node
+  hostPID: true
+  containers:
+  - name: monitor
+    image: alpine:3.18
+    # A continuous loop running 'top' in batch/non-interactive mode
+    command: ["sh", "-c", "while true; do echo '--- SYSTEM STATS ---'; top -b -n 1 | head -n 20; sleep 5; done"]
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "100m"
+        memory: "64Mi"

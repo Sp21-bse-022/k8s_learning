@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-pod-test
+  labels:
+    app: test-init
+  annotations:
+    kyverno.io/skip: "true"
+spec:
+  # 1. This container runs first and must complete successfully before the main container starts
+  initContainers:
+  - name: init-file-generator
+    image: busybox:1.36
+    command: ['sh', '-c', 'echo "Hello from the init container! Testing successful." > /shared-data/testfile.txt']
+    volumeMounts:
+    - name: workdir
+      mountPath: /shared-data
+
+  containers:
+  - name: main-app
+    image: busybox:1.36
+    command: ['sh', '-c', 'cat /shared-data/testfile.txt && sleep 3600']
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "64Mi"
+        cpu: "100m"
+    volumeMounts:
+    - name: workdir
+      mountPath: /shared-data
+  # 3. The temporary shared volume space connecting both containers
+  volumes:
+  - name: workdir
+    emptyDir: {}

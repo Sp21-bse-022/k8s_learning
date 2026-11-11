@@ -1,0 +1,31 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-kubecloud
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - priceconverter.com
+    secretName: tls-cer
+  rules:
+  - host: priceconverter.com
+    http:
+      paths:
+      - path: /path
+        pathType: Prefix
+        backend:
+          service:
+            name: test
+            port:
+              number: 80
+      - path: /play
+        pathType: Prefix
+        backend:
+          service:
+            name: web-page
+            port:
+              number: 80

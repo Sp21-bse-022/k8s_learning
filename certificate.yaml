@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: example-com
+spec:
+  # Secret names are always required.
+  secretName: tls-cer
+  dnsNames:
+    - priceconverter.com
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+
